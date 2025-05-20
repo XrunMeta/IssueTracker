@@ -1,0 +1,10 @@
+Realtime Voice Cloning Tool 
+git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning
+
+Step Installation
+1. Install dependencies
+    pip install -r requirements.txt
+2. Download pretrained models
+    Dir: ...\Real-Time-Voice-Cloning\saved_models\default
+    Link: https://drive.google.com/drive/folders/1fU6umc5uQAVR2udZdHX-lDgXYzTyqG_j
+3. Open LaunchUI.py for testing
