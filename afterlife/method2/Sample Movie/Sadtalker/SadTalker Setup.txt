@@ -1,0 +1,22 @@
+Remove VENV Folder
+
+#Create Venv Folder
+python -m venv venv
+
+#Activate Env
+venv\Scripts\activate
+
+#Update Pip
+python -m pip install --upgrade pip
+
+#Install New PyTorch version
+pip install torch torchvision torchaudio
+
+#Install Gradio
+pip uninstall gradio
+pip install gradio==3.23.0
+
+#Install GPU
+pip install torch==2.1.0+cu118 torchvision==0.16.0+cu118 torchaudio==2.1.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+
+python launcher.py
