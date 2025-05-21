@@ -8,6 +8,9 @@ import sys
 import os
 from pathlib import Path
 import librosa
+import whisper
+import tempfile
+import soundfile as sf
 
 # Add repo modules to path
 sys.path.append(".")
@@ -17,18 +20,13 @@ from synthesizer.inference import Synthesizer
 from vocoder import inference as vocoder
 from encoder import audio
 
-
-'''
-#  Default Path Load models
-encoder.load_model(Path("encoder/saved_models/pretrained.pt"))
-synthesizer = Synthesizer(Path("synthesizer/saved_models/logs-pretrained/"))
-vocoder.load_model(Path("vocoder/saved_models/pretrained/pretrained.pt"))
-'''
-
 # Adjusted paths to your saved models
 encoder.load_model(Path("saved_models/default/encoder.pt"))
 synthesizer = Synthesizer(Path("saved_models/default/synthesizer.pt"))  # Synthesizer accepts path to file
 vocoder.load_model(Path("saved_models/default/vocoder.pt"))
+
+# === Load Whisper model (base model) ===
+whisper_model = whisper.load_model("base")  # or use "medium"/"large" if needed
 
 # Inference function
 def clone_voice(speaker_audio, text_input):
@@ -48,15 +46,43 @@ def clone_voice(speaker_audio, text_input):
     generated_wav = np.pad(generated_wav, (0, 4000), mode="constant")
     return (16000, generated_wav)
 
-# Gradio Interface
-gr.Interface(
-    fn=clone_voice,
-    inputs=[
-        gr.Audio(source="upload", type="filepath", label="Upload Speaker Audio"),
-        gr.Textbox(lines=2, label="Text to Synthesize")
-    ],
-    outputs=gr.Audio(label="Cloned Voice Output"),
-    title="Real-Time-Voice-Cloning Test",
-    description="Upload a short audio of a speaker and type text to hear their cloned voice.\n#XRun_Diaz Reza",
-    allow_flagging="never"
-).launch()
+# === Whisper STT Function ===
+def transcribe_audio(audio_path):
+    print(f"[DEBUG] Received audio_path: {audio_path}")  # <--- Add this
+
+    if audio_path is None or not os.path.exists(audio_path):
+        return "No valid audio file received."
+
+    try:
+        audio, sr = librosa.load(audio_path, sr=16000)
+    except Exception as e:
+        return f"Error loading audio: {e}"
+
+    result = whisper_model.transcribe(audio)
+    return result["text"]
+
+
+
+# === Gradio UI ===
+with gr.Blocks() as demo:
+    gr.Markdown("# 🎙️ Real-Time Voice Cloning + Whisper STT\nUpload a target speaker voice, transcribe the speech to text, and synthesize a cloned voice.")
+
+    with gr.Row():
+        stt_audio = gr.Audio(source="upload", type="filepath", label="🗣️ Audio to Transcribe")
+        speaker_audio = gr.Audio(source="upload", type="filepath", label="🎤 Target Speaker Audio to Clone")
+
+    with gr.Row():
+        text_input = gr.Textbox(label="💬 Text to Synthesize", lines=8)
+
+    with gr.Row():
+        transcribe_btn = gr.Button("🔁 Transcribe Audio → Text")
+        clone_btn = gr.Button("🧬 Clone Voice")
+
+    cloned_output = gr.Audio(label="🧠 Cloned Output")
+
+    # Actions
+    transcribe_btn.click(fn=transcribe_audio, inputs=stt_audio, outputs=text_input)
+    clone_btn.click(fn=clone_voice, inputs=[speaker_audio, text_input], outputs=cloned_output)
+
+# === Launch the app ===
+demo.launch()

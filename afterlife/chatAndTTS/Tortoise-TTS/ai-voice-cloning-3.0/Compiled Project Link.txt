@@ -1,0 +1,3 @@
+https://huggingface.co/Jmica/ai-voice-cloning/tree/main
+
+download size: ~10gb 
