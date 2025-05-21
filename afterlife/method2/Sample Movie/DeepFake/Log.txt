@@ -1,4 +1,0 @@
-| 작성자 | SHA1 | 메시지 | 날짜 |
-| --- | --- | --- | --- |
-|  Eko  |   b562800   |   Generate 2D photo to video - Result : weird need to adjust   | 2024-03-18 12:17:40 +00:00 |
-
