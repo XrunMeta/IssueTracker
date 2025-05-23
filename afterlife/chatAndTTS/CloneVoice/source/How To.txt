@@ -15,4 +15,9 @@
     python code_dev.py
 8. After downloading,  start app
     python app.py
-    
+
+    *if no model found, download tts & sts model manually
+        tts: https://github.com/jianchang512/clone-voice/releases/download/v0.0.1/model-ttts.7z
+        sts: https://github.com/jianchang512/clone-voice/releases/download/v0.0.1/model-sts.7z
+    extract both files to tts folder and re run start app
+9. If everything setup correctly, the app will works normally
