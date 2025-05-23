@@ -1,0 +1,23 @@
+1. Clone Project (skip if already)
+    git clone https://github.com/jianchang512/clone-voice.git
+2. Create virtual environment
+    python -m venv venv
+3. Activate the environment
+    venv\Scripts\activate
+4. Install Dependencies
+    pip install -r requirements.txt --no-deps
+5. Install CUDA torch (for NVidia Card)
+    pip uninstall -y torch
+    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+6. Add ffmpeg.exe in same dir with app.py (skip if already)
+    https://ffmpeg.org/download.html
+7. First Run and wait for the model to be downloaded
+    python code_dev.py
+8. After downloading,  start app
+    python app.py
+
+    *if no model found, download tts & sts model manually
+        tts: https://github.com/jianchang512/clone-voice/releases/download/v0.0.1/model-ttts.7z
+        sts: https://github.com/jianchang512/clone-voice/releases/download/v0.0.1/model-sts.7z
+    extract both files to tts folder and re run start app
+9. If everything setup correctly, the app will works normally
